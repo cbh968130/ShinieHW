@@ -1,21 +1,26 @@
-#8.MA10RegressCoeff6
+# encoding: utf-8 
+# 文件需要以utf-8格式编码
+# 文件名代表因子名称，需满足命名规范
+__author__ = "陈熙元" # 这里填下你的名字
+default_params = {"t1":10, "t2":6} # 这里填写因子参数默认值，比如: {"t1": 10}
+params_description = {"t1":"t1日价格平均线", "t2":"t2日线性回归"} # 这里填写因子参数描述信息，比如: {"t1": "并没有用上的参数"}
 
-import pandas as pd
-import numpy as np
+def run_formula(dv, params=default_params):
+    """
+    10日价格平均线N日线性回归系数。
+    取近N个交易日的对应MA值，
+    对N个周期的序数进行普通最小二乘线性回归，
+    取股价关于周期序数的系数。
+    MA(close, N)=a+bt+e
+    b即为MA10RegressCoeff。
+    N取6日。
+    """
+    t1=params["t1"]
+    t2=params["t2"]
+    
+    value = dv.add_formula("MA10RegressCoeff6_J",
+                           "Ta('LINEARREG_SLOPE',0,0,0,0,Ta('SMA',0,0,0,0,close,0,%s),0,%s)"%(t1,t2),
+                           is_quarterly=False,
+                           add_data=True)
 
-def run_formula(dv):
-    df=dv.get_ts('close')
-    m=10
-    n=6
-    t=np.arange(1,n+1) #周期序数
-    var=np.cov(t,t)[0][0]
-    ma=pd.rolling_mean(df,m) #计算MA
-    rd=pd.DataFrame(index=df.index,columns=df.columns) #要输出的df
-    l=len(df.index) #日期长度
-    for k in df.columns:
-        s=ma[k]
-        rs=pd.Series(index=df.index)
-        for i in np.arange(m+n-2,l):
-            rs[rs.index[i]]=np.cov(s[s.index[i-5:i+1]],t)[0][1]/var #得到beta
-        rd[k]=rs
-    return rd
+    return value
