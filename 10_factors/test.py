@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 def get_dv(start = 20170101,end = 20180101): 
     import jaqs_fxdayu
     jaqs_fxdayu.patch_all()
@@ -13,10 +12,10 @@ def get_dv(start = 20170101,end = 20180101):
     #--------------------------------------------------------
     
     #define
-    factor_list  = ['BBI','EPS','PE','PS','ACCA','CTOP','MA10RegressCoeff12','AR','BR','ARBR','np_parent_comp_ttm','total_share','bps']
+    factor_list = ['volume', 'net_profit','total_liab', 'tot_assets','oper_rev','less_oper_cost']
     check_factor = ','.join(factor_list)
     
-    dataview_folder = r'../data'
+    dataview_folder = r'data'
     ds = LocalDataService(fp = dataview_folder)
     
     ZZ800_id = ds.query_index_member("000906.SH", start, end)
@@ -59,7 +58,7 @@ def test(factor,data):
             raise TypeError('error index type')
         print ('{} OK!'.format(factor))
 
-from Tamplate import AR,ARBR,BBI,EPSTTM,PSIndu
+import newAlpha1,newAlpha2,newAlpha3,newAlpha4,newAlpha5,newAlpha6,newAlpha7,newAlpha8,newAlpha9,newAlpha10
 
-for f in ['AR','ARBR','BBI','EPSTTM','PSIndu']:
+for f in ['newAlpha1','newAlpha2','newAlpha3','newAlpha4','newAlpha5','newAlpha6','newAlpha7','newAlpha8','newAlpha9','newAlpha10']:
     test(f, globals()[f].run_formula(dv))
